@@ -1,2 +1,8 @@
 backend/node_modules
+backend/.env
+
 frontend/node_modules
+
+.idea
+.DS_Store
+backend/.DS_Store
