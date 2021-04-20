@@ -9,14 +9,15 @@ const validator = require('validator');
 function validateFields(fields) {
   for (let {value, type} of fields) {
     if (!value) {
-      throw new Error(`Camp gol.`);
+      throw new Error(`Empty field.`);
     }
 
     // value = value + '';  // convert to string
     switch(type) {
-      case 'int':
-        if(!validator.isInt(value)) {
-          throw new Error(`Field ${value} is not an integer.`);
+      case 'id':
+        const options = {min: 1};
+        if(!validator.isInt(value, options)) {
+          throw new Error(`Field ${value} is not a natural number.`);
         }
         break;
       case 'username':

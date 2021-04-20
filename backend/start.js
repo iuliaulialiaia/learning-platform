@@ -14,14 +14,12 @@ app.use(express.json());
 app.use('/', routes);
 
 app.use((err, req, res, next) => {
-  if (err) {
-    // TODO trimite erori custom
-    console.error(err.stack);
-    res.status(500).send(err.message);
-  }
+  // TODO trimite erori custom
+  console.error(err.stack);
+  res.status(500).send(err.message);
 });
 
 const port = parseInt(process.env.PORT);
 app.listen(port, () => {
-  console.log(`App is listening at ${process.env.BASE_URL}:${port}`);
+  console.log(`App is listening at ${process.env.HOST}:${port}`);
 });
