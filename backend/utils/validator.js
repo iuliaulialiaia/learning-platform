@@ -14,14 +14,19 @@ function validateFields(fields) {
 
     // value = value + '';  // convert to string
     switch(type) {
+      case 'usernameOrEmail':  // TODO schimba pattern ul pentru username
+        if(!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g) &&
+           !validator.isEmail(value)) {
+          throw new Error(`Invalid username or email.`);
+        }
+        break;
       case 'id':
         const options = {min: 1};
         if(!validator.isInt(value, options)) {
           throw new Error(`Field ${value} is not a natural number.`);
         }
         break;
-      case 'username':
-        // TODO schimba pattern ul pentru username
+      case 'username':  // TODO schimba pattern ul pentru username
         if(!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g)) {
           throw new Error(`Invalid username.`);
         }

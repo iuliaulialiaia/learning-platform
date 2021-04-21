@@ -1,6 +1,4 @@
 const {query} = require('./index');
-const {hash, compare} = require('../password');
-const {createToken} = require('../jwt');
 
 async function getAll() {
   const sql_query = 'SELECT * FROM lp_user';
@@ -17,35 +15,24 @@ async function getIdByEmail(email) {
   return await query(sql_query, [email]);
 }
 
-async function add(username, email, plainPassword, role) {
+async function getIdByUsername(username) {
+  const sql_query = 'SELECT id FROM lp_user WHERE username = $1';
+  return await query(sql_query, [username]);
+}
+
+async function getByEmailOrUsername(usernameOrEmail) {
+  const sql_query = 'SELECT * FROM lp_user WHERE email = $1 OR username = $1';
+  return await query(sql_query, [usernameOrEmail]);
+}
+
+async function add(username, email, password, role) {
   const sql_query = '                         \
 		INSERT INTO                                \
 		lp_user (username, email, password, role)   \
 		VALUES ($1, $2, $3, $4)                      \
 	';
-  const hashedPassword = await hash(plainPassword);
-  await query(sql_query, [username, email, hashedPassword, role]);
-}
 
-async function login(email, password) {
-  const sql_query = 'SELECT * FROM lp_user WHERE email = $1';
-  const users = await query(sql_query, [email]);
-
-  if (users.length === 0 ) {
-    throw new Error(`Email not found.`);
-  }
-  const user = users[0];
-
-  const matched = await compare(password, user.password);
-  if(!matched) {
-    throw new Error(`Wrong password.`);
-  }
-
-  const payload = {
-    id: user.id,
-    role: user.role
-  };
-  return createToken(payload);
+  await query(sql_query, [username, email, password, role]);
 }
 
 async function updateById(id, username, email, password, role, confirmed) {
@@ -57,10 +44,9 @@ async function updateById(id, username, email, password, role, confirmed) {
   await query(sql_query, [id, username, email, password, role, confirmed]);
 }
 
-async function resetPassword(id, plainPassword) {
+async function resetPassword(id, password) {
   const sql_query = 'UPDATE lp_user SET password = $2 WHERE id = $1';
-  const hashedPassword = await hash(plainPassword);
-  await query(sql_query, [id, hashedPassword]);
+  await query(sql_query, [id, password]);
 }
 
 async function confirmEmail(id) {
@@ -77,8 +63,9 @@ module.exports = {
   getAll,  // unused
   getById,
   getIdByEmail,
+  getIdByUsername,
+  getByEmailOrUsername,
   add,
-  login,
   updateById,  // unused
   resetPassword,
   confirmEmail,

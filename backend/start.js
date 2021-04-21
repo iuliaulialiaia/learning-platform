@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use('/', routes);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // TODO trimite erori custom
   console.error(err.stack);
   res.status(500).send(err.message);

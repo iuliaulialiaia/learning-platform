@@ -3,26 +3,10 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const PasswordResetData = require('../data/password_reset.data');
 const UserData = require('../data/user.data');
-const {validateFields} = require('../validator');
-const Mailer = require('../mailer');
+const Mailer = require('../utils/mailer');
+const {validateFields} = require('../utils/validator');
 
 const router = express.Router();
-
-router.get(
-  '/:token',
-  asyncHandler(async (req, res) => {
-    const {token} = req.params;
-
-    const fields = [{value: token, type: 'jwt'}];
-    validateFields(fields);
-
-    const payload = jwt.verify(token, process.env.JWT_MAILER_KEY);
-    const {id} = payload;
-
-    await PasswordResetData.deleteByUserId(id);
-    res.json(id);
-  })
-);
 
 router.post(
   '/',
@@ -49,6 +33,21 @@ router.post(
 
     await Mailer.sendPasswordResetLink(token, email);
     res.status(201).end();
+  })
+);
+
+router.get(
+  '/:token',
+  asyncHandler(async (req, res) => {
+    const {token} = req.params;
+    const fields = [{value: token, type: 'jwt'}];
+    validateFields(fields);
+
+    const payload = jwt.verify(token, process.env.JWT_MAILER_KEY);
+    const {id} = payload;
+
+    await PasswordResetData.deleteByUserId(id);
+    res.json(id);
   })
 );
 
