@@ -1,13 +1,14 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const asyncHandler = require('express-async-handler');
 const UserData = require('../data/user.data');
+const PasswordResetData = require('../data/password_reset.data');
 const Mailer = require('../utils/mailer');
 const {validateFields} = require('../utils/validator');
 const {hash, compare} = require('../security/password');
 
 const router = express.Router();
 
+/*
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -15,7 +16,9 @@ router.get(
     res.json(users);
   })
 );
+*/
 
+/*
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -27,84 +30,83 @@ router.get(
     res.json(user);
   })
 );
-
-router.get(
-  '/confirmation/:token',
-  asyncHandler(async (req, res) => {
-    const {token} = req.params;
-    const fields = [{value: token, type: 'jwt'}];
-    validateFields(fields);
-
-    const payload = jwt.verify(token, process.env.JWT_MAILER_KEY);
-    const {id: [{id}]} = payload;  // TODO ????
-
-    await UserData.confirmEmail(id);
-    res.status(200).end();
-  })
-);
+*/
 
 router.post(
   '/',
-  asyncHandler(async (req, res) => {
+  async (req, res, next) => {
     const {username, email, password, role} = req.body;
-    const fields = [
-      {value: username, type: 'username'},
-      {value: email, type: 'email'},
-      {value: password, type: 'password'},
-      {value: role, type: 'role'}
-    ];
-    validateFields(fields);
 
-    let id = await UserData.getIdByEmail(email);
-    if (id.length !== 0) {
-      throw new Error(`This email address is already being used`);
+    try {
+      validateFields([
+        {value: username, type: 'username'},
+        {value: email, type: 'email'},
+        {value: password, type: 'password'},
+        {value: role, type: 'role'}
+      ]);
+
+      let queryResult = await UserData.getIdByEmail(email);
+      if (queryResult.length !== 0) {
+        next(new Error(`This email address is already being used`));
+        return;
+      }
+      queryResult = await UserData.getIdByUsername(username);
+      if (queryResult.length !== 0) {
+        next(new Error(`This username is already taken`));
+        return;
+      }
+
+      const hashedPassword = await hash(password);
+      await UserData.add(username, email, hashedPassword, role);
+
+      queryResult = await UserData.getIdByEmail(email);
+      const {id} = queryResult[0];
+      await Mailer.sendEmailConfirmationLink({id}, email);
+
+      res.status(201).end();
+    } catch (error) {
+      next(error);
     }
-    id = await UserData.getIdByUsername(username);
-    if (id.length !== 0) {
-      throw new Error(`This username is already taken`);
-    }
-
-    const hashedPassword = await hash(password);
-    await UserData.add(username, email, hashedPassword, role);
-
-    id = await UserData.getIdByEmail(email);
-    await Mailer.sendEmailConfirmationLink({id}, email);
-    res.status(201).end();
-  })
+  }
 );
 
 router.post(
   '/login',
-  asyncHandler(async (req, res) => {
+  async (req, res, next) => {
     const {usernameOrEmail, password} = req.body;
-    let fields = [{value: usernameOrEmail, type: 'usernameOrEmail'}];
-    validateFields(fields);
 
-    let user = await UserData.getByEmailOrUsername(usernameOrEmail);
-    if (user.length === 0) {
-      throw new Error('Username or email not found');
+    try {
+      validateFields([{value: usernameOrEmail, type: 'usernameOrEmail'}]);
+
+      const queryResult = await UserData.getByEmailOrUsername(usernameOrEmail);
+      if (queryResult.length === 0) {
+        next(new Error('Username or email not found'));
+      }
+      const user = queryResult[0];
+
+      const matched = await compare(password, user.password);
+      if(!matched) {
+        next(new Error(`Wrong password.`));
+      }
+
+      const payload = {
+        id: user.id,
+        role: user.role
+      };
+      const options = {
+        issuer: process.env.JWT_ISSUER,
+        subject: process.env.JWT_SUBJECT,
+        audience: process.env.JWT_AUDIENCE
+      };
+      const token =  jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
+      res.status(200).json(token);
+    } catch (error) {
+      next(error);
     }
-    user = user[0];
-
-    const matched = await compare(password, user.password);
-    if(!matched) {
-      throw new Error(`Wrong password.`);
-    }
-
-    const payload = {
-      id: user.id,
-      role: user.role
-    };
-    const options = {
-      issuer: process.env.JWT_ISSUER,
-      subject: process.env.JWT_SUBJECT,
-      audience: process.env.JWT_AUDIENCE
-    };
-    const token =  jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
-    res.status(200).json(token);
-  })
+  }
 );
 
+/*
 router.put(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -123,36 +125,50 @@ router.put(
     res.status(200).end();
   })
 );
+*/
 
 router.patch(
-  '/:id',
-  asyncHandler(async (req, res, next) => {
-    const {id} = req.params;
-    const {password, confirmed} = req.body;  // TODO pune mai multe campuri
+  '/:token',
+  async (req, res, next) => {
+    const {token} = req.params;
+    const {emailConfirmation, password} = req.body;
 
-    if (password !== undefined) {  // password reset request
-      const fields = [
-        {value: id, type: 'id'},
-        {value: password, type: 'password'}
-      ];
-      validateFields(fields);
+    try {
+      validateFields([{value: token, type: 'jwt'}]);
+      const {id} = jwt.verify(token, process.env.JWT_MAILER_KEY);
+      validateFields([{value: id, type: 'id'}]);
+
+      if (emailConfirmation !== undefined) {  // email confirmation request
+        await UserData.confirmEmail(id);
+        res.status(200).end();
+        return;
+      }
+      // password reset request
+      validateFields([{value: password, type: 'password'}]);
+
+      const queryResult = await PasswordResetData.getByUserId(id);
+      if (queryResult.length === 0) {
+        next(new Error('Trying to reset password, but no token found in database.'));
+        return;
+      }
+      const dbToken = queryResult[0].token;
+      if (dbToken !== token) {
+        next(new Error('Trying to reset password, but the provided token does not correspond to the original one.'));
+        return;
+      }
+      await PasswordResetData.deleteByUserId(id);
 
       const hashedPassword = await hash(password);
-      await UserData.resetPassword(parseInt(id), hashedPassword);
-      res.status(200).end();
-    } else if (confirmed === 'true') {  // email confirmation
-      const fields = [{value: id, type: 'id'}];
-      validateFields(fields);
+      await UserData.resetPassword(id, hashedPassword);
 
-      await UserData.confirmEmail(id);
       res.status(200).end();
-    } else {
-      const error = new Error('Wrong request');
+    } catch (error) {
       next(error);
     }
-  })
+  }
 );
 
+/*
 router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -164,6 +180,7 @@ router.delete(
     res.status(204).end();
   })
 );
+*/
 
 module.exports = {
   UserRouter: router

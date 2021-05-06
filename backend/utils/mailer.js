@@ -16,8 +16,6 @@ const options = {
   audience: process.env.JWT_AUDIENCE,
 };
 
-const base_url = process.env.HOST + ':' + process.env.PORT;
-
 async function sendEmailConfirmationLink(token_payload, email) {
   const token_options = {
     ...options,
@@ -26,7 +24,7 @@ async function sendEmailConfirmationLink(token_payload, email) {
   };
   const token = jwt.sign(token_payload, process.env.JWT_MAILER_KEY, token_options);
 
-  const url = base_url + '/user/confirmation';
+  const url = process.env.FRONTEND;
   const mail_data = {
     to: email,
     from: process.env.MAILER_USER,
@@ -37,7 +35,7 @@ async function sendEmailConfirmationLink(token_payload, email) {
 }
 
 async function sendPasswordResetLink(token, email) {
-  const url = base_url + '/password_reset';
+  const url = process.env.FRONTEND + '/password-reset';
   const mail_data = {
     to: email,
     from: process.env.MAILER_USER,

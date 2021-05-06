@@ -12,7 +12,7 @@ function validateFields(fields) {
       throw new Error(`Empty field.`);
     }
 
-    // value = value + '';  // convert to string
+    // ;  // convert to string
     switch(type) {
       case 'usernameOrEmail':  // TODO schimba pattern ul pentru username
         if(!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g) &&
@@ -21,6 +21,7 @@ function validateFields(fields) {
         }
         break;
       case 'id':
+        value = value + '';  // convert to string
         const options = {min: 1};
         if(!validator.isInt(value, options)) {
           throw new Error(`Field ${value} is not a natural number.`);

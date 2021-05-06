@@ -34,6 +34,6 @@ function extractPayload(req) {  // TODO am sters try-catch
 }
 
 module.exports = {
-  createToken,
+  //createToken,
   extractPayload
 };
