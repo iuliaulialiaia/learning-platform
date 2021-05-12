@@ -44,6 +44,16 @@ async function updateById(id, username, email, password, role, confirmed) {
   await query(sql_query, [id, username, email, password, role, confirmed]);
 }
 
+async function addPhoto(id, photo) {
+  const sql_query = 'UPDATE lp_user SET photo = $2 WHERE id = $1';
+  await query(sql_query, [id, photo]);
+}
+
+async function getPhoto(id) {
+  const sql_query = 'SELECT photo FROM lp_user WHERE id = $1';
+  return await query(sql_query, [id]);
+}
+
 async function resetPassword(id, password) {
   const sql_query = 'UPDATE lp_user SET password = $2 WHERE id = $1';
   await query(sql_query, [id, password]);
@@ -66,6 +76,8 @@ module.exports = {
   getIdByUsername,
   getByEmailOrUsername,
   add,
+  addPhoto,
+  getPhoto,
   updateById,  // unused
   resetPassword,
   confirmEmail,

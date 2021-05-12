@@ -6,7 +6,25 @@ const Mailer = require('../utils/mailer');
 const {validateFields} = require('../utils/validator');
 const {hash, compare} = require('../security/password');
 
+const fs = require('fs');
+
 const router = express.Router();
+
+router.get('/',
+  async (req, res, next) => {
+    const data = fs.readFileSync('/Users/iuliaulialiaia/cv/avatar.png');
+    await UserData.addPhoto(49, data);
+    res.send(data);
+  }
+);
+
+router.get('/2',
+  async (req, res, next) => {
+    const data = await UserData.getPhoto(49);
+    fs.appendFileSync('/Users/iuliaulialiaia/test.png', data[0].photo);
+    res.send(data[0].photo);
+  }
+);
 
 /*
 router.get(
@@ -74,6 +92,7 @@ router.post(
   '/login',
   async (req, res, next) => {
     const {usernameOrEmail, password} = req.body;
+    console.log(usernameOrEmail, ' -------- ', password);
 
     try {
       validateFields([{value: usernameOrEmail, type: 'usernameOrEmail'}]);

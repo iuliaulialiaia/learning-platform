@@ -24,7 +24,7 @@ async function sendEmailConfirmationLink(token_payload, email) {
   };
   const token = jwt.sign(token_payload, process.env.JWT_MAILER_KEY, token_options);
 
-  const url = process.env.FRONTEND;
+  const url = process.env.FRONTEND + '/email-confirmation';
   const mail_data = {
     to: email,
     from: process.env.MAILER_USER,

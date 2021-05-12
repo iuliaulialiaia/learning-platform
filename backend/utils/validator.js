@@ -9,13 +9,12 @@ const validator = require('validator');
 function validateFields(fields) {
   for (let {value, type} of fields) {
     if (!value) {
-      throw new Error(`Empty field.`);
+      throw new Error(`Empty field of type ${type}.`);
     }
 
-    // ;  // convert to string
     switch(type) {
       case 'usernameOrEmail':  // TODO schimba pattern ul pentru username
-        if(!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g) &&
+        if (!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g) &&
            !validator.isEmail(value)) {
           throw new Error(`Invalid username or email.`);
         }
@@ -23,33 +22,33 @@ function validateFields(fields) {
       case 'id':
         value = value + '';  // convert to string
         const options = {min: 1};
-        if(!validator.isInt(value, options)) {
+        if (!validator.isInt(value, options)) {
           throw new Error(`Field ${value} is not a natural number.`);
         }
         break;
       case 'username':  // TODO schimba pattern ul pentru username
-        if(!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g)) {
+        if (!validator.matches(value, /[a-zA-Z][a-zA-Z0-9 .\-_]+[a-zA-Z0-9]/g)) {
           throw new Error(`Invalid username.`);
         }
         break;
       case 'email':
-        if(!validator.isEmail(value)) {
+        if (!validator.isEmail(value)) {
           throw new Error(`Invalid email.`);
         }
         break;
       case 'password':
-        if(!validator.isStrongPassword(value)) {
+        if (!validator.isStrongPassword(value)) {
           throw new Error(`Weak password.`);
         }
         break;
       case 'role':
         const roles = ['teacher', 'student'];
-        if(roles.indexOf(value) === -1) {
+        if (roles.indexOf(value) === -1) {
           throw new Error(`Field ${value} is not a system role.`);
         }
         break;
       case 'jwt':
-        if(!validator.isJWT(value)) {
+        if (!validator.isJWT(value)) {
           throw new Error(`Field ${value} is not a JWT.`);
         }
         break;

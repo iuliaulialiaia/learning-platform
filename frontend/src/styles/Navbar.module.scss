@@ -1,0 +1,37 @@
+.navbar {
+  height: 70px;
+  color: #FFFFFA;
+
+  svg {
+    font-size: 50px;
+    margin: 10px 5px 10px 10px;
+    float: left;
+  }
+
+  h1 {
+    width: 50px;
+    height: 50px;
+    margin: 10px 10px 10px 5px;
+    float: left;
+    font-size: 30px;
+    font-family: 'Luckiest Guy', cursive;
+  }
+
+  a {
+    height: 50px;
+    padding: 15px 0;
+    margin: 10px;
+    float: right;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  a:hover {
+    color: #80a8ce;
+  }
+
+  a:first-of-type {
+    margin-right: 30px;
+  }
+}
