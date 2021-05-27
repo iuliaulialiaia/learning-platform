@@ -4,9 +4,9 @@ import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
-import validateFields from './utils/validator';
-import {InputWrapper, InfoMessageWrapper} from './styles/form';
-import styles from './styles/Form.module.scss';
+import validateFields from '../utils/validator';
+import {InputWrapper, InfoMessageWrapper} from '../styles/form';
+import styles from '../styles/Form.module.scss';
 
 function PasswordReset(props) {
   const {token} = useParams();
@@ -56,8 +56,8 @@ function PasswordReset(props) {
 
     const data = {password: password1};
     axios.patch(`http://localhost:3000/user/${token}`, data)
-      .then(response => handleResponse(response))
-      .catch(error => handleError(error));
+      .then(handleResponse)
+      .catch(handleError);
   }
 
   return message ? (

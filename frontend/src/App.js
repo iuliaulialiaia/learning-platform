@@ -1,13 +1,14 @@
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 
-import Login from './Login';
-import Register from './Register';
-import PasswordResetRequest from './PasswordResetRequest';
-import PasswordReset from './PasswordReset';
-import EmailConfirmation from './EmailConfirmation';
-import Dashboard from './Dashboard';
-import Navbar from './Navbar';
+import Auth from "./auth/Auth";
+import Login from './auth/Login';
+import Register from './auth/Register';
+import PasswordResetRequest from './auth/PasswordResetRequest';
+import PasswordReset from './auth/PasswordReset';
+import EmailConfirmation from './auth/EmailConfirmation';
+import Dashboard from './dashboard/Dashboard';
+import Navbar from './auth/Navbar';
 import {selectEmail, selectUsername} from './features/auth/auth.slice';
 import styles from './styles/App.module.scss';
 
@@ -17,20 +18,14 @@ function App(props) {
 
   return (
     <div className={styles.app}>
-      <BrowserRouter>
-        <Navbar/>
+      {username && <Redirect to='/dashboard'/>}
+      {/*<Redirect to='/login'/>*/}
 
-        {username && <Redirect to='/'/>}
+      <Switch>
+        <Route path='/dashboard' component={Dashboard}/>
+        <Route path='/' component={Auth}/>
+      </Switch>
 
-        <Switch>
-          <Route path='/login' component={Login}/>
-          <Route path='/register' component={Register}/>
-          <Route path='/password-reset/:token' component={PasswordReset}/>
-          <Route path='/password-reset' component={PasswordResetRequest}/>
-          <Route path='/email-confirmation/:token' component={EmailConfirmation}/>
-          <Route path='/' component={Dashboard}/>
-        </Switch>
-      </BrowserRouter>
     </div>
   );
 }

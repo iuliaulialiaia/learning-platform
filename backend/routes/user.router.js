@@ -1,30 +1,130 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const {unlink} = require('fs/promises');
+const fs = require('fs');
+
 const UserData = require('../data/user.data');
 const PasswordResetData = require('../data/password_reset.data');
 const Mailer = require('../utils/mailer');
 const {validateFields} = require('../utils/validator');
 const {hash, compare} = require('../security/password');
 
-const fs = require('fs');
-
 const router = express.Router();
 
-router.get('/',
-  async (req, res, next) => {
-    const data = fs.readFileSync('/Users/iuliaulialiaia/cv/avatar.png');
-    await UserData.addPhoto(49, data);
-    res.send(data);
+const pathToProfilePictures = __dirname + '/../profile_pictures/';
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, pathToProfilePictures),
+  filename: (req, file, cb) => cb(null, file.originalname)
+});
+const upload = multer({
+  storage: storage,
+  limits: {
+    fields: 0,
+    fileSize: 1000000,
+    files: 1,
+    parts: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+    cb(null, allowedTypes.includes(file.mimetype));
+  }
+});
+const type = upload.single('userPicture');
+
+router.post(
+  '/profile_picture',
+  type,
+  async function (req, res, next) {
+    if (req.file === undefined) {
+      next(new Error('Imagine incompatibila'));
+      return;
+    }
+
+    // extrage id din token
+    const id = 66;  // TODO trimite token
+    const [user] = await UserData.getById(id);
+    if (!user) {
+      next(new Error('User not found'));
+      return;
+    }
+
+    const [username, extension] = req.file.originalname.split('.');
+    await UserData.updateExtension(id, extension);
+
+    const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+    const filenames = extensions
+      .filter(ext => ext !== extension)
+      .map(ext => username + '.' + ext);
+    for (let filename of filenames) {
+      try {
+        await unlink(pathToProfilePictures + filename);
+      } catch (err) { } // no such file or directory
+    }
+
+    res.status(200).send();
   }
 );
 
-router.get('/2',
-  async (req, res, next) => {
-    const data = await UserData.getPhoto(49);
-    fs.appendFileSync('/Users/iuliaulialiaia/test.png', data[0].photo);
-    res.send(data[0].photo);
+router.get(
+  '/profile_picture/:id',
+  async function (req, res, next) {
+    const {id} = req.params;  // TODO trimite token, nu id
+
+    const [user] = await UserData.getById(id);  // TODO foloseste destructuring si la restul rutelor
+    if (!user) {
+      next(new Error('User not found'));
+      return;
+    }
+    if (!user.extension) {
+      res.end();
+      return;
+    }
+
+    const filename = user.username + '.' + user.extension;
+    let readStream = fs.createReadStream(pathToProfilePictures + filename);
+    readStream.pipe(res);
   }
 );
+
+// router.get(
+//   '/profile_picture/:id',
+//   async function (req, res, next) {
+//
+//
+//     try {
+//       const file = new File(await UserData.getPhoto(id), 'iulia.png');
+//       console.log(file);
+//       res.writeHead(200, {
+//         'Content-Type': 'image/png',
+//         'Content-Length': file.size
+//       });
+//       const readStream = fileSystem.createReadStream(file.url);
+//       console.log('aici ma intereseaza -------', file.url)
+//       // We replaced all the event handlers with a simple call to readStream.pipe()
+//       readStream.pipe(res);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+
+// router.get('/',
+//   async (req, res, next) => {
+//     const data = fs.readFileSync('/Users/iuliaulialiaia/cv/avatar.png');
+//     await UserData.addPhoto(49, data);
+//     res.send(data);
+//   }
+// );
+//
+// router.get('/2',
+//   async (req, res, next) => {
+//     const data = await UserData.getPhoto(49);
+//     fs.appendFileSync('/Users/iuliaulialiaia/test.png', data[0].photo);
+//     res.send(data[0].photo);
+//   }
+// );
 
 /*
 router.get(
@@ -92,7 +192,6 @@ router.post(
   '/login',
   async (req, res, next) => {
     const {usernameOrEmail, password} = req.body;
-    console.log(usernameOrEmail, ' -------- ', password);
 
     try {
       validateFields([{value: usernameOrEmail, type: 'usernameOrEmail'}]);
@@ -100,12 +199,14 @@ router.post(
       const queryResult = await UserData.getByEmailOrUsername(usernameOrEmail);
       if (queryResult.length === 0) {
         next(new Error('Username or email not found'));
+        return;
       }
       const user = queryResult[0];
 
       const matched = await compare(password, user.password);
       if(!matched) {
         next(new Error(`Wrong password.`));
+        return;
       }
 
       const payload = {
@@ -118,7 +219,16 @@ router.post(
         audience: process.env.JWT_AUDIENCE
       };
       const token =  jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
-      res.status(200).json(token);
+
+      const response = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        confirmed: user.confirmed,
+        token: token
+      };
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }

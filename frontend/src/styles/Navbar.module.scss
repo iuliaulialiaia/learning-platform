@@ -1,37 +1,155 @@
-.navbar {
+div.navbar {
   height: 70px;
-  color: #FFFFFA;
 
   svg {
     font-size: 50px;
-    margin: 10px 5px 10px 10px;
     float: left;
+    margin: 10px 5px 10px 10px;
   }
 
   h1 {
     width: 50px;
     height: 50px;
-    margin: 10px 10px 10px 5px;
     float: left;
     font-size: 30px;
+    margin: 10px 10px 10px 5px;
     font-family: 'Luckiest Guy', cursive;
   }
 
+  nav {
+    * {
+      float: right;
+    }
+
+    a {
+      text-transform: uppercase;
+    }
+
+    &:last-child {
+      margin-right: 30px;
+    }
+  }
+}
+
+div.auth {
+  background-color: #00509D;
+  color: #FFFFFA;
+
   a {
     height: 50px;
-    padding: 15px 0;
     margin: 10px;
-    float: right;
+    padding: 15px 0;
     color: white;
-    text-decoration: none;
-    text-transform: uppercase;
   }
 
   a:hover {
     color: #80a8ce;
   }
+}
 
-  a:first-of-type {
-    margin-right: 30px;
+div.dashboard {
+  background-color: #FFFFFA;
+  color: #00509D;
+
+  a {
+    color: #00509D;
+
+    svg {
+      padding: 0;
+      margin: 0;
+
+      &:hover {
+        color: #80a8ce;
+      }
+    }
+  }
+
+  div.search {
+    position: relative;
+    float: left;
+    margin: 20px 0 20px 20vw;
+
+    svg {
+      position: absolute;
+      left: 0;
+      font-size: 30px;
+      padding: 5px;
+      margin: 0 0 0 5px;
+      color: #aac5de;
+    }
+
+    input {
+      width: 40vw;
+      height: 30px;
+      padding-left: 40px;
+      border-radius: 5px;
+      border: solid 1px #d5e2ef;
+      outline: none;
+      background-color: rgba(213, 226, 239, 0.2);
+      color: #00509D;
+    }
+
+    &:hover, &:focus {
+      input {
+        border-color: #aac5de;
+        background-color: rgba(213, 226, 239, 0.15);
+      }
+    }
+  }
+
+  nav {
+    div:first-child {
+      position: relative;
+
+      svg:first-child {
+        cursor: pointer;
+      }
+
+      div.dropdown {
+        min-width: 160px;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #FFFFFA;
+
+        div {
+          width: 100%;
+
+          * {
+            height: 40px;
+            float: left;
+            margin: 0;
+          }
+
+          svg {
+            width: 30px;
+            font-size: 30px;
+            padding: 5px;
+            margin-left: 5px;
+            color: #aac5de;
+          }
+
+          a {
+            width: calc(100% - 30px - 5px);
+            padding: 10px;
+            text-align: center;
+            text-transform: lowercase;
+          }
+
+          &:hover {
+            background-color: rgba(213, 226, 239, 0.2);
+          }
+        }
+      }
+    }
+
+    a {
+      height: 30px;
+      margin: 20px 20px;
+
+      svg {
+        font-size: 30px;
+      }
+    }
   }
 }

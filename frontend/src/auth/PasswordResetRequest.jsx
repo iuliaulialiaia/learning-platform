@@ -3,9 +3,9 @@ import axios from 'axios';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-import validateFields from './utils/validator';
-import {InputWrapper, InfoMessageWrapper} from './styles/form';
-import styles from './styles/Form.module.scss';
+import validateFields from '../utils/validator';
+import {InputWrapper, InfoMessageWrapper} from '../styles/form';
+import styles from '../styles/Form.module.scss';
 
 function PasswordResetRequest(props) {
   const [email, setEmail] = useState('');
@@ -41,8 +41,8 @@ function PasswordResetRequest(props) {
 
     const data = {email: email};
     axios.post('http://localhost:3000/password_reset', data)
-      .then(response => handleResponse(response))
-      .catch(error => handleError(error));
+      .then(handleResponse)
+      .catch(handleError);
   }
 
   return message ? (

@@ -35,6 +35,11 @@ async function add(username, email, password, role) {
   await query(sql_query, [username, email, password, role]);
 }
 
+async function updateExtension(id, extension) {
+  const sql_query = 'UPDATE lp_user SET extension = $2 WHERE id = $1';
+  await query(sql_query, [id, extension]);
+}
+
 async function updateById(id, username, email, password, role, confirmed) {
   const sql_query = ' \
 		UPDATE lp_user \
@@ -42,16 +47,6 @@ async function updateById(id, username, email, password, role, confirmed) {
 		WHERE id = $1 \
 	';
   await query(sql_query, [id, username, email, password, role, confirmed]);
-}
-
-async function addPhoto(id, photo) {
-  const sql_query = 'UPDATE lp_user SET photo = $2 WHERE id = $1';
-  await query(sql_query, [id, photo]);
-}
-
-async function getPhoto(id) {
-  const sql_query = 'SELECT photo FROM lp_user WHERE id = $1';
-  return await query(sql_query, [id]);
 }
 
 async function resetPassword(id, password) {
@@ -76,9 +71,8 @@ module.exports = {
   getIdByUsername,
   getByEmailOrUsername,
   add,
-  addPhoto,
-  getPhoto,
   updateById,  // unused
+  updateExtension,
   resetPassword,
   confirmEmail,
   deleteById

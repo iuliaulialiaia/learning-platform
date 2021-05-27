@@ -1,11 +1,12 @@
 .form {
-  background-color: #00509D;
   height: 70vh;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  background-color: #00509D;
+  color: #d5e2ef;
 
   h1 {
     margin-bottom: 40px;
@@ -14,6 +15,10 @@
   a {
     color: #80a8ce;
     margin-bottom: 20px;
+
+    &:hover {
+      color: #d5e2ef;
+    }
   }
 
   input {
@@ -70,6 +75,10 @@
     padding: 10px;
     border-radius: 5px;
     background-color: #FDC500;
+  }
+
+  input[type='submit']:hover, input[type='submit']:focus {
+    background: radial-gradient(circle, #FFD543 0%, #FDC500 100%);
   }
 
   div.submit {
