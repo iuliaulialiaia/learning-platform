@@ -1,4 +1,4 @@
-import styles from '../styles/Aside.module.scss';
+import styles from '../../styles/aside/Aside.module.scss';
 
 function Aside(props) {
   return (

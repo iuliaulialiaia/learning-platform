@@ -5,10 +5,10 @@ import {useDispatch} from 'react-redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
-import validateFields from '../utils/validator';
-import {setUser} from '../features/auth/auth.slice';
-import {InputWrapper, InfoMessageWrapper} from '../styles/form';
-import styles from '../styles/Form.module.scss';
+import validateFields from '../../utils/validator';
+import {setUser} from '../../features/auth/auth.slice';
+import {InputWrapper, InfoMessageWrapper} from '../../styles/form';
+import styles from '../../styles/Form.module.scss';
 
 function Login(props) {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -34,20 +34,13 @@ function Login(props) {
 
   function handleResponse(response) {
     const user = response.data;
-
-    const action = setUser({
-      username: user.username,
-      email: user.email,
-      role: user.role
-    });
-    dispatch(action);  // TODO de ce doar username si email
-
-    localStorage.setItem('token', user.token);
-    props.history.push('/dashboard');
+    const action = setUser(user);
+    dispatch(action);
+    //props.history.push('/dashboard');
   }
 
   function handleError(error) {
-    console.log((error));
+    alert(error);
     setError(error.message);
   }
 

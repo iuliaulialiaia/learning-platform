@@ -6,7 +6,7 @@ import Register from './Register';
 import PasswordReset from './PasswordReset';
 import PasswordResetRequest from './PasswordResetRequest';
 import EmailConfirmation from './EmailConfirmation';
-import styles from '../styles/Auth.module.scss';
+import styles from '../../styles/Auth.module.scss';
 
 function Auth(props) {
   return (
@@ -19,6 +19,8 @@ function Auth(props) {
         <Route path='/password-reset/:token' component={PasswordReset}/>
         <Route path='/password-reset' component={PasswordResetRequest}/>
         <Route path='/email-confirmation/:token' component={EmailConfirmation}/>
+
+        <Route path='/' component={Login}/>
       </Switch>
     </div>
   );

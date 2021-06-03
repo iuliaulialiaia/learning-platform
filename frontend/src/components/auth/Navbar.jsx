@@ -2,7 +2,7 @@ import {Link} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faShapes} from '@fortawesome/free-solid-svg-icons';
 
-import styles from '../styles/Navbar.module.scss';
+import styles from '../../styles/navbar/Navbar.module.scss';
 
 function Navbar(props) {
   return (

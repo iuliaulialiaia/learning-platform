@@ -33,152 +33,32 @@ const upload = multer({
 const type = upload.single('userPicture');
 
 router.post(
-  '/profile_picture',
-  type,
-  async function (req, res, next) {
-    if (req.file === undefined) {
-      next(new Error('Imagine incompatibila'));
-      return;
-    }
-
-    // extrage id din token
-    const id = 66;  // TODO trimite token
-    const [user] = await UserData.getById(id);
-    if (!user) {
-      next(new Error('User not found'));
-      return;
-    }
-
-    const [username, extension] = req.file.originalname.split('.');
-    await UserData.updateExtension(id, extension);
-
-    const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
-    const filenames = extensions
-      .filter(ext => ext !== extension)
-      .map(ext => username + '.' + ext);
-    for (let filename of filenames) {
-      try {
-        await unlink(pathToProfilePictures + filename);
-      } catch (err) { } // no such file or directory
-    }
-
-    res.status(200).send();
-  }
-);
-
-router.get(
-  '/profile_picture/:id',
-  async function (req, res, next) {
-    const {id} = req.params;  // TODO trimite token, nu id
-
-    const [user] = await UserData.getById(id);  // TODO foloseste destructuring si la restul rutelor
-    if (!user) {
-      next(new Error('User not found'));
-      return;
-    }
-    if (!user.extension) {
-      res.end();
-      return;
-    }
-
-    const filename = user.username + '.' + user.extension;
-    let readStream = fs.createReadStream(pathToProfilePictures + filename);
-    readStream.pipe(res);
-  }
-);
-
-// router.get(
-//   '/profile_picture/:id',
-//   async function (req, res, next) {
-//
-//
-//     try {
-//       const file = new File(await UserData.getPhoto(id), 'iulia.png');
-//       console.log(file);
-//       res.writeHead(200, {
-//         'Content-Type': 'image/png',
-//         'Content-Length': file.size
-//       });
-//       const readStream = fileSystem.createReadStream(file.url);
-//       console.log('aici ma intereseaza -------', file.url)
-//       // We replaced all the event handlers with a simple call to readStream.pipe()
-//       readStream.pipe(res);
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
-
-
-// router.get('/',
-//   async (req, res, next) => {
-//     const data = fs.readFileSync('/Users/iuliaulialiaia/cv/avatar.png');
-//     await UserData.addPhoto(49, data);
-//     res.send(data);
-//   }
-// );
-//
-// router.get('/2',
-//   async (req, res, next) => {
-//     const data = await UserData.getPhoto(49);
-//     fs.appendFileSync('/Users/iuliaulialiaia/test.png', data[0].photo);
-//     res.send(data[0].photo);
-//   }
-// );
-
-/*
-router.get(
-  '/',
-  asyncHandler(async (req, res) => {
-    const users = await UserData.getAll();
-    res.json(users);
-  })
-);
-*/
-
-/*
-router.get(
-  '/:id',
-  asyncHandler(async (req, res) => {
-    const {id} = req.params;
-    const fields = [{value: id, type: 'id'}];
-    validateFields(fields);
-
-    const user = await UserData.getById(parseInt(id));
-    res.json(user);
-  })
-);
-*/
-
-router.post(
   '/',
   async (req, res, next) => {
-    const {username, email, password, role} = req.body;
+    const {username, email, password} = req.body;
 
     try {
       validateFields([
         {value: username, type: 'username'},
         {value: email, type: 'email'},
-        {value: password, type: 'password'},
-        {value: role, type: 'role'}
+        {value: password, type: 'password'}
       ]);
 
-      let queryResult = await UserData.getIdByEmail(email);
-      if (queryResult.length !== 0) {
+      let [id] = await UserData.getIdByEmail(email);
+      if (id) {
         next(new Error(`This email address is already being used`));
         return;
       }
-      queryResult = await UserData.getIdByUsername(username);
-      if (queryResult.length !== 0) {
+      [id] = await UserData.getIdByUsername(username);
+      if (id) {
         next(new Error(`This username is already taken`));
         return;
       }
 
       const hashedPassword = await hash(password);
-      await UserData.add(username, email, hashedPassword, role);
+      await UserData.add(username, email, hashedPassword);
 
-      queryResult = await UserData.getIdByEmail(email);
-      const {id} = queryResult[0];
+      [{id}] = await UserData.getIdByEmail(email);
       await Mailer.sendEmailConfirmationLink({id}, email);
 
       res.status(201).end();
@@ -196,12 +76,11 @@ router.post(
     try {
       validateFields([{value: usernameOrEmail, type: 'usernameOrEmail'}]);
 
-      const queryResult = await UserData.getByEmailOrUsername(usernameOrEmail);
-      if (queryResult.length === 0) {
+      const [user] = await UserData.getByUsernameOrEmail(usernameOrEmail);
+      if (!user) {
         next(new Error('Username or email not found'));
         return;
       }
-      const user = queryResult[0];
 
       const matched = await compare(password, user.password);
       if(!matched) {
@@ -211,7 +90,7 @@ router.post(
 
       const payload = {
         id: user.id,
-        role: user.role
+        confirmed: user.confirmed
       };
       const options = {
         issuer: process.env.JWT_ISSUER,
@@ -221,14 +100,130 @@ router.post(
       const token =  jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
 
       const response = {
-        id: user.id,
+        token: token,
         username: user.username,
         email: user.email,
-        role: user.role,
         confirmed: user.confirmed,
-        token: token
+        uploadedPic: user.image_type !== null,
+        title: user.title,
+        description: user.description,
+        contact: user.contact,
+        work: user.work,
+        education: user.education,
+        award: user.award,
+        book: user.book
       };
       res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.patch(
+  '/:token',
+  async (req, res, next) => {
+    const {token} = req.params;
+    const {emailConfirmation, password} = req.body;
+
+    try {
+      validateFields([{value: token, type: 'jwt'}]);
+      const {id} = jwt.verify(token, process.env.JWT_MAILER_KEY);
+      validateFields([{value: id, type: 'id'}]);
+
+      if (emailConfirmation !== undefined) {  // email confirmation request
+        await UserData.updateConfirmed(id);
+        res.status(200).end();
+        return;
+      }
+      // password reset request
+      validateFields([{value: password, type: 'password'}]);
+
+      const [passwordReset] = await PasswordResetData.getByUserId(id);
+      if (!passwordReset) {
+        next(new Error('Trying to reset password, but no token found in database.'));
+        return;
+      }
+      if (passwordReset.token !== token) {
+        next(new Error('Trying to reset password, but the provided token does not correspond to the original one.'));
+        return;
+      }
+      await PasswordResetData.deleteByUserId(id);
+
+      const hashedPassword = await hash(password);
+      await UserData.updatePassword(id, hashedPassword);
+
+      res.status(200).end();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/profile_picture/:token',
+  type,
+  async function (req, res, next) {
+    const {token} = req.params;
+
+    try {
+      if (req.file === undefined) {
+        next(new Error('Imagine incompatibila'));
+        return;
+      }
+
+      validateFields([{value: token, type: 'jwt'}]);
+      const {id} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      validateFields([{value: id, type: 'id'}]);
+
+      const [user] = await UserData.get(id);
+      if (!user) {
+        next(new Error('User not found'));
+        return;
+      }
+
+      const [username, imageType] = req.file.originalname.split('.');
+      await UserData.updateImageType(id, imageType);
+
+      const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+      const filenames = extensions
+        .filter(extension => extension !== imageType)
+        .map(extension => username + '.' + extension);
+      for (let filename of filenames) {
+        unlink(pathToProfilePictures + filename)
+          .catch(error => { }); // no such file or directory
+      }
+
+      res.status(200).json({uploadedPic: true});
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  '/profile_picture/:token',
+  async function (req, res, next) {
+    const {token} = req.params;
+
+    try {
+      validateFields([{value: token, type: 'jwt'}]);
+      const {id} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      validateFields([{value: id, type: 'id'}]);
+
+      const [user] = await UserData.get(id);
+      if (!user) {
+        next(new Error('User not found'));
+        return;
+      }
+      if (!user.image_type) {
+        res.status(404).end();
+        return;
+      }
+
+      const filename = user.username + '.' + user.image_type;
+      let readStream = fs.createReadStream(pathToProfilePictures + filename);
+      readStream.pipe(res);
     } catch (error) {
       next(error);
     }
@@ -255,47 +250,6 @@ router.put(
   })
 );
 */
-
-router.patch(
-  '/:token',
-  async (req, res, next) => {
-    const {token} = req.params;
-    const {emailConfirmation, password} = req.body;
-
-    try {
-      validateFields([{value: token, type: 'jwt'}]);
-      const {id} = jwt.verify(token, process.env.JWT_MAILER_KEY);
-      validateFields([{value: id, type: 'id'}]);
-
-      if (emailConfirmation !== undefined) {  // email confirmation request
-        await UserData.confirmEmail(id);
-        res.status(200).end();
-        return;
-      }
-      // password reset request
-      validateFields([{value: password, type: 'password'}]);
-
-      const queryResult = await PasswordResetData.getByUserId(id);
-      if (queryResult.length === 0) {
-        next(new Error('Trying to reset password, but no token found in database.'));
-        return;
-      }
-      const dbToken = queryResult[0].token;
-      if (dbToken !== token) {
-        next(new Error('Trying to reset password, but the provided token does not correspond to the original one.'));
-        return;
-      }
-      await PasswordResetData.deleteByUserId(id);
-
-      const hashedPassword = await hash(password);
-      await UserData.resetPassword(id, hashedPassword);
-
-      res.status(200).end();
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 /*
 router.delete(

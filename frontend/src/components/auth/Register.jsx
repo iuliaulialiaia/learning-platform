@@ -3,9 +3,9 @@ import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
-import validateFields from '../utils/validator';
-import {InputWrapper, InfoMessageWrapper} from '../styles/form';
-import styles from '../styles/Form.module.scss';
+import validateFields from '../../utils/validator';
+import {InputWrapper, InfoMessageWrapper} from '../../styles/form';
+import styles from '../../styles/Form.module.scss';
 
 function Register(props) {
   const [username, setUsername] = useState('');
@@ -70,8 +70,7 @@ function Register(props) {
     const data = {
       username: username,
       email: email,
-      password: password1,
-      role: syntheticEvent.target.value
+      password: password1
     };
     axios.post('http://localhost:3000/user', data)
       .then(handleResponse)
@@ -111,10 +110,7 @@ function Register(props) {
         <p>{password2Error}</p>
       </InputWrapper>
 
-      <div className={styles.submit}>
-        <input type='submit' value='student' onClick={submit}/>
-        <input type='submit' value='profesor' onClick={submit}/>
-      </div>
+      <input type='submit' value='trimite' onClick={submit}/>
     </form>
   );
 }

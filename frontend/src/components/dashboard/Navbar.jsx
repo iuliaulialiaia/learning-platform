@@ -1,13 +1,15 @@
+import React, {useState} from "react";
 import {Link} from 'react-router-dom';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faShapes, faUserCircle, faUser, faSignOutAlt, faSearch, faPlus} from '@fortawesome/free-solid-svg-icons';
-
-import styles from '../styles/Navbar.module.scss';
-import React, {useEffect, useState} from "react";
-
-import DropdownWrapper from '../styles/navbar';
-import {removeUser} from "../features/auth/auth.slice";
 import {useDispatch} from "react-redux";
+import { Menu, MenuItem } from '@material-ui/core';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faShapes, faUser, faSignOutAlt, faSearch, faPlus, faBell, faEdit} from '@fortawesome/free-solid-svg-icons';
+import { makeStyles } from '@material-ui/core/styles';
+
+import {removeUser} from "../../features/auth/auth.slice";
+import ProfilePicture from "../user/ProfilePicture";
+import DropdownWrapper from '../../styles/navbar/navbar';
+import styles from '../../styles/navbar/Navbar.module.scss';
 
 function Navbar(props) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -15,7 +17,6 @@ function Navbar(props) {
 
   function logout(syntheticEvent) {
     dispatch(removeUser());
-    localStorage.clear();
   }
 
   function toggleDropdown(syntheticEvent) {
@@ -34,23 +35,32 @@ function Navbar(props) {
 
       <nav>
         <div>
-          <FontAwesomeIcon icon={faUserCircle} onClick={toggleDropdown}/>
+          <ProfilePicture onClick={toggleDropdown}/>
 
           <DropdownWrapper className={styles.dropdown} show={showDropdown}>
             <div>
               <FontAwesomeIcon icon={faUser}/>
-              <Link to='/'>Contul meu</Link>
+              <Link to='/'>Profilul meu</Link>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faEdit}/>
+              <Link to='/'>Setari</Link>
             </div>
             <div>
               <FontAwesomeIcon icon={faSignOutAlt}/>
               <Link to='/login' onClick={logout}>Ieși din cont</Link>
             </div>
           </DropdownWrapper>
+
         </div>
 
-        <Link to='/'>
+        <div>
+          <FontAwesomeIcon icon={faBell}/>
+        </div>
+
+        <div>
           <FontAwesomeIcon icon={faPlus}/>
-        </Link>
+        </div>
       </nav>
     </div>
   );

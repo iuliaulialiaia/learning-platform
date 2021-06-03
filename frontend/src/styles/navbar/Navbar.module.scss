@@ -51,19 +51,6 @@ div.dashboard {
   background-color: #FFFFFA;
   color: #00509D;
 
-  a {
-    color: #00509D;
-
-    svg {
-      padding: 0;
-      margin: 0;
-
-      &:hover {
-        color: #80a8ce;
-      }
-    }
-  }
-
   div.search {
     position: relative;
     float: left;
@@ -98,57 +85,46 @@ div.dashboard {
   }
 
   nav {
-    div:first-child {
-      position: relative;
-
-      svg:first-child {
-        cursor: pointer;
-      }
-
-      div.dropdown {
-        min-width: 160px;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background-color: #FFFFFA;
-
-        div {
-          width: 100%;
-
-          * {
-            height: 40px;
-            float: left;
-            margin: 0;
-          }
-
-          svg {
-            width: 30px;
-            font-size: 30px;
-            padding: 5px;
-            margin-left: 5px;
-            color: #aac5de;
-          }
-
-          a {
-            width: calc(100% - 30px - 5px);
-            padding: 10px;
-            text-align: center;
-            text-transform: lowercase;
-          }
-
-          &:hover {
-            background-color: rgba(213, 226, 239, 0.2);
-          }
-        }
-      }
+    svg {
+      font-size: 24px;
+      margin: 23px 10px;
+      cursor: pointer;
     }
 
-    a {
-      height: 30px;
-      margin: 20px 20px;
+    div.dropdown {
+      width: 160px;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background-color: #FFFFFA;
 
-      svg {
-        font-size: 30px;
+      div {
+        width: 100%;
+
+        * {
+          height: 40px;
+          float: left;
+          margin: 0;
+        }
+
+        svg {
+          width: 30px;
+          font-size: 30px;
+          padding: 5px;
+          margin-left: 5px;
+          color: #aac5de;
+        }
+
+        a {
+          width: calc(100% - 30px - 5px);
+          padding: 10px;
+          text-align: center;
+          text-transform: lowercase;
+        }
+
+        &:hover {
+          background-color: rgba(213, 226, 239, 0.2);
+        }
       }
     }
   }

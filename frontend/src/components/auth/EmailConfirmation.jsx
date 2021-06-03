@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
-import validateFields from '../utils/validator';
-import {InfoMessageWrapper} from '../styles/form';
-import styles from '../styles/Form.module.scss';
+import validateFields from '../../utils/validator';
+import {InfoMessageWrapper} from '../../styles/form';
+import styles from '../../styles/Form.module.scss';
 
 function EmailConfirmation(props) {
   const {token} = useParams();
