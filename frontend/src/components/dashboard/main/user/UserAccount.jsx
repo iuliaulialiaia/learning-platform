@@ -11,9 +11,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {faFacebookSquare, faInstagram, faYoutube} from "@fortawesome/free-brands-svg-icons";
 
-import {selectDescription, selectTitle, selectUsername} from "../../features/auth/auth.slice";
-import ProfilePicture from "./ProfilePicture";
-import styles from '../../styles/main/Main.module.scss';
+import {selectDescription, selectTitle, selectUsername} from "../../../../features/auth.slice";
+import UserImage from "./UserImage";
+import styles from '../../../../styles/dashboard/main/Main.module.scss';
 
 function UserAccount(props) {
   const username = useSelector(selectUsername);
@@ -22,7 +22,7 @@ function UserAccount(props) {
 
   return (
     <div className={styles.main}>
-      <ProfilePicture/>
+      <UserImage/>
       <h1>{username}</h1>
       <p>{title}</p>
 

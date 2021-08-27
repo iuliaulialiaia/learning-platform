@@ -6,9 +6,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
 import validateFields from '../../utils/validator';
-import {setUser} from '../../features/auth/auth.slice';
-import {InputWrapper, InfoMessageWrapper} from '../../styles/form';
-import styles from '../../styles/Form.module.scss';
+import {setUser} from '../../features/auth.slice';
+import {InputWrapper, InfoMessageWrapper} from '../../styles/auth/form';
+import styles from '../../styles/auth/Form.module.scss';
+import {ADMIN_EMAIL, ADMIN_USERNAME} from "../../utils/settings";
 
 function Login(props) {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -36,7 +37,6 @@ function Login(props) {
     const user = response.data;
     const action = setUser(user);
     dispatch(action);
-    //props.history.push('/dashboard');
   }
 
   function handleError(error) {

@@ -1,19 +1,23 @@
 import React, {useState} from "react";
 import {Link} from 'react-router-dom';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { Menu, MenuItem } from '@material-ui/core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faShapes, faUser, faSignOutAlt, faSearch, faPlus, faBell, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {faUser, faSignOutAlt, faSearch, faPlus, faBell, faEdit, faBars} from '@fortawesome/free-solid-svg-icons';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {removeUser} from "../../features/auth/auth.slice";
-import ProfilePicture from "../user/ProfilePicture";
-import DropdownWrapper from '../../styles/navbar/navbar';
-import styles from '../../styles/navbar/Navbar.module.scss';
+import {removeUser, selectUploadedPic, selectUsername} from "../../../features/auth.slice";
+import UserImage from "../main/user/UserImage";
+import DropdownWrapper from '../../../styles/navbar/navbar';
+import styles from '../../../styles/navbar/Navbar.module.scss';
+import Logo from "../../logo/Logo";
+import SearchInput from "./SearchInput";
 
 function Navbar(props) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
+  const uploadedPic = useSelector(selectUploadedPic);
+  const username = useSelector(selectUsername);
 
   function logout(syntheticEvent) {
     dispatch(removeUser());
@@ -25,17 +29,12 @@ function Navbar(props) {
 
   return (
     <div className={styles.navbar + ' ' + styles.dashboard}>
-      <FontAwesomeIcon icon={faShapes}/>
-      <h1>Learning Platform</h1>
-
-      <div className={styles.search}>
-        <FontAwesomeIcon icon={faSearch}/>
-        <input type='text' placeholder='caută'/>
-      </div>
+      {/*<FontAwesomeIcon icon={faBars}/>*/}
+      <Logo/>
 
       <nav>
-        <div>
-          <ProfilePicture onClick={toggleDropdown}/>
+        <div onClick={toggleDropdown}>
+          <UserImage image={uploadedPic}/>
 
           <DropdownWrapper className={styles.dropdown} show={showDropdown}>
             <div>
@@ -51,17 +50,19 @@ function Navbar(props) {
               <Link to='/login' onClick={logout}>Ieși din cont</Link>
             </div>
           </DropdownWrapper>
-
         </div>
 
-        <div>
-          <FontAwesomeIcon icon={faBell}/>
-        </div>
-
-        <div>
-          <FontAwesomeIcon icon={faPlus}/>
-        </div>
+        {username === 'admin' ? (
+          <div>
+            <Link to='/dashboard/new-course'>
+              <span>{'\uf067'}</span>
+            </Link>
+          </div>
+          ): <></>
+        }
       </nav>
+
+      <SearchInput/>
     </div>
   );
 }

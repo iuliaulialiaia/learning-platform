@@ -1,0 +1,20 @@
+@import "../../variables";
+
+.main {
+  width: calc(100vw - #{$aside-width});
+  height: calc(100vh - #{$navbar-height});
+  margin-top: $navbar-height;
+  overflow: scroll;
+}
+
+//@media screen and (max-width: 1312px) {
+//  .main {
+//    width: calc(100vw - 50px);
+//  }
+//}
+//
+//@media screen and (max-width: 791px) {
+//  .main {
+//    width: 100vw;
+//  }
+//}

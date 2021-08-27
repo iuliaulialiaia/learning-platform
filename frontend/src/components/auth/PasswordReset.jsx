@@ -5,8 +5,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
 import validateFields from '../../utils/validator';
-import {InputWrapper, InfoMessageWrapper} from '../../styles/form';
-import styles from '../../styles/Form.module.scss';
+import {InputWrapper, InfoMessageWrapper} from '../../styles/auth/form';
+import styles from '../../styles/auth/Form.module.scss';
 
 function PasswordReset(props) {
   const {token} = useParams();

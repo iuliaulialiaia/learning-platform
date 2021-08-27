@@ -12,7 +12,7 @@ const {hash, compare} = require('../security/password');
 
 const router = express.Router();
 
-const pathToProfilePictures = __dirname + '/../profile_pictures/';
+const pathToProfilePictures = __dirname + '/../users/';
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, pathToProfilePictures),
   filename: (req, file, cb) => cb(null, file.originalname)
@@ -55,7 +55,7 @@ router.post(
         return;
       }
 
-      const hashedPassword = await hash(password);
+      const hashedPassword = hash(password);
       await UserData.add(username, email, hashedPassword);
 
       [{id}] = await UserData.getIdByEmail(email);
@@ -82,7 +82,7 @@ router.post(
         return;
       }
 
-      const matched = await compare(password, user.password);
+      const matched = compare(password, user.password);
       if(!matched) {
         next(new Error(`Wrong password.`));
         return;
@@ -108,10 +108,7 @@ router.post(
         title: user.title,
         description: user.description,
         contact: user.contact,
-        work: user.work,
-        education: user.education,
-        award: user.award,
-        book: user.book
+        events: user.events
       };
       res.status(200).json(response);
     } catch (error) {
@@ -202,7 +199,40 @@ router.post(
 );
 
 router.get(
-  '/profile_picture/:token',
+  '/image/:id/:token',
+  async function (req, res, next) {
+    let {id, token} = req.params;
+
+    try {
+      validateFields([
+        {value: id, type: 'id'},
+        {value: token, type: 'jwt'}
+      ]);
+      let {id} = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      validateFields([{value: id, type: 'id'}]);
+
+      id = parseInt(req.params.id);
+      const [user] = await UserData.get(id);
+      if (!user) {
+        next(new Error('User not found'));
+        return;
+      }
+      if (!user.image_type) {
+        res.status(404).end();
+        return;
+      }
+
+      const filename = user.username + '.' + user.image_type;
+      let readStream = fs.createReadStream(pathToProfilePictures + filename);
+      readStream.pipe(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  '/image/:token',
   async function (req, res, next) {
     const {token} = req.params;
 

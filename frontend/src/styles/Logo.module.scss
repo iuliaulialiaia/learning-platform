@@ -1,0 +1,25 @@
+.logo {
+  * {
+    float: left;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    float: left;
+    margin: 15px 5px 15px 20px;
+  }
+
+  svg {
+    font-size: 40px;
+    margin: 15px 5px 15px 10px;
+  }
+
+  h1 {
+    width: 50px;
+    height: 40px;
+    font-size: 25px;
+    margin: 15px 10px 15px 5px;
+    font-family: 'Luckiest Guy', cursive;
+  }
+}

@@ -1,0 +1,10 @@
+@import '../../variables';
+
+.textArea {
+  width: 100%;
+  height: 1em;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  background-color: $ivory;
+}

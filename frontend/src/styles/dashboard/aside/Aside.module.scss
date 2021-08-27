@@ -1,0 +1,72 @@
+@import '../../variables';
+
+.aside {
+  width: $aside-width;
+  height: calc(100vh - #{$navbar-height});
+  margin-top: $navbar-height;
+  overflow: scroll;
+
+  h4 {
+    padding: 10px 0 10px 20px;
+    color: #979797;
+  }
+
+  span {
+    margin-right: 5px;
+    font-family: 'FontAwesome', $default-font;
+  }
+
+  p {
+    padding: 5px 0 5px 10px;
+    cursor: pointer;
+    color: black;
+
+    &:hover {
+      background-color: $golden-poppy01;
+    }
+  }
+
+  div:last-child {
+    margin-bottom: 100px;
+  }
+}
+
+.thumbnail {
+  height: 100px;
+  position: relative;
+  padding: 0 10px 0 10px;
+
+  * {
+    width: calc(100% - 20px) !important;
+    height: 100%;
+    position: absolute;
+  }
+
+  svg {
+    font-size: 100px;
+    color: #D8D8D8;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+  }
+
+  input {
+    z-index: 2;
+    opacity: 0;
+    
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+//@media screen and (max-width: 1312px) {
+//  .aside {
+//    //width: 50px;
+//  }
+//}
+//
+//@media screen and (max-width: 791px) {
+//  .aside {
+//    //display: none;
+//    //width: calc(100vw - 50px);
+//  }
+//}

@@ -6,11 +6,10 @@ import Register from './Register';
 import PasswordReset from './PasswordReset';
 import PasswordResetRequest from './PasswordResetRequest';
 import EmailConfirmation from './EmailConfirmation';
-import styles from '../../styles/Auth.module.scss';
 
 function Auth(props) {
   return (
-    <div className={styles.auth}>
+    <div>
       <Navbar/>
 
       <Switch>

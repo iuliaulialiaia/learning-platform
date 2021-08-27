@@ -1,7 +1,7 @@
 const {query} = require('./index');
 
 async function get(id) {
-  const sql_query = 'SELECT * FROM _user WHERE u.id = $1';
+  const sql_query = 'SELECT * FROM _user WHERE id = $1';
   return await query(sql_query, [id]);
 }
 

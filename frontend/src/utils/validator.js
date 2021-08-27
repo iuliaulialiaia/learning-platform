@@ -1,4 +1,5 @@
 import validator from 'validator';
+import {ADMIN_EMAIL, ADMIN_USERNAME} from "./settings";
 
 /**
  * @param {Object[]} fields
@@ -26,7 +27,7 @@ function validateFields(fields) {
         }
         break;
       case 'login_password':
-        if (!validator.isStrongPassword(value)) {
+        if (!validator.isStrongPassword(value) && !(value === ADMIN_USERNAME || value === ADMIN_EMAIL)) {
           errors[i] = 'Parolă incorectă';
         }
         break;

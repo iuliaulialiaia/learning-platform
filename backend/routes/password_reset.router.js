@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+
 const PasswordResetData = require('../data/password_reset.data');
 const UserData = require('../data/user.data');
 const Mailer = require('../utils/mailer');

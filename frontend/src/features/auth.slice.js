@@ -9,10 +9,7 @@ const initialState = {
   title: '',
   description: '',
   contact: '',
-  work: '',
-  education: '',
-  award: '',
-  book: '',
+  events: '',
   token: ''
 };
 
@@ -43,10 +40,7 @@ const selectUploadedPic = (state) => state.auth.uploadedPic;
 const selectTitle = (state) => state.auth.title;
 const selectDescription = (state) => state.auth.description;
 const selectContact = (state) => state.auth.contact;
-const selectWork = (state) => state.auth.work;
-const selectEducation = (state) => state.auth.education;
-const selectAward = (state) => state.auth.award;
-const selectBook = (state) => state.auth.book;
+const selectEvents = (state) => state.auth.events;
 const selectToken = (state) => state.auth.token;
 
 export {
@@ -61,9 +55,6 @@ export {
   selectTitle,
   selectDescription,
   selectContact,
-  selectWork,
-  selectEducation,
-  selectAward,
-  selectBook,
+  selectEvents,
   selectToken
 };

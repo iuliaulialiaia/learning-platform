@@ -4,8 +4,9 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
 
 import validateFields from '../../utils/validator';
-import {InputWrapper, InfoMessageWrapper} from '../../styles/form';
-import styles from '../../styles/Form.module.scss';
+import {InputWrapper, InfoMessageWrapper} from '../../styles/auth/form';
+import styles from '../../styles/auth/Form.module.scss';
+import {ADMIN_EMAIL, ADMIN_USERNAME} from "../../utils/settings";
 
 function Register(props) {
   const [username, setUsername] = useState('');

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
-import {selectUsername, selectToken, selectLoggedIn, selectUploadedPic, setUser} from "../../features/auth/auth.slice";
+import {selectUsername, selectToken, selectLoggedIn, selectUploadedPic, setUser} from "../../features/auth.slice";
 import styles from '../../styles/UserAccount.module.scss';
 import {faUserCircle} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

@@ -1,11 +1,14 @@
+@import '../variables';
+
 .form {
+  width: 100vw;
   height: 70vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  background-color: #00509D;
+  background: radial-gradient(circle, #00509D 0%, $midnight-express 100%);
   color: #d5e2ef;
 
   h1 {
@@ -24,12 +27,9 @@
   input {
     font-size: 1em;
     border: none;
-    font-family: 'Raleway', sans-serif;
-    color: #3d3b30;
-  }
-
-  input:focus {
     outline: none;
+    font-family: $font-family, $default-font;
+    color: #3d3b30;
   }
 
   div.input {
@@ -57,12 +57,12 @@
       width: 300px;
       height: 30px;
       padding: 20px;
-      border-radius: 20px;
+      border-radius: $border-radius;
       background-color: #aac5de;
-    }
-
-    input:hover, input:focus {
-      background-color: #D5E2EF;
+      
+      &:hover {
+        background-color: #D5E2EF;
+      }
     }
   }
 
@@ -73,28 +73,31 @@
   input[type='submit'] {
     width: 100px;
     padding: 10px;
-    border-radius: 5px;
-    background-color: #FDC500;
-  }
-
-  input[type='submit']:hover, input[type='submit']:focus {
-    background: radial-gradient(circle, #FFD543 0%, #FDC500 100%);
+    border-radius: $border-radius;
+    background-color: $golden-poppy;
+    
+    &:hover {
+      background: radial-gradient(circle, #FFD543 0%, $golden-poppy 100%);
+    }
   }
 }
 
 .info {
-  height: 100%;
+  width: 100vw;
+  height: 70vh;
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  background: radial-gradient(circle, #00509D 0%, $midnight-express 100%);
+  color: $ivory;
 
   h1 {
     display: none;
     font-weight: bold;
-  }
-
-  h1:nth-child(2) {
-    color: #FFA593;
+    
+    &:nth-child(2) {
+      color: #FFA593;
+    }
   }
 }

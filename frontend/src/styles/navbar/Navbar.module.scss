@@ -1,131 +1,102 @@
-div.navbar {
-  height: 70px;
+@import '../variables';
 
-  svg {
-    font-size: 50px;
-    float: left;
-    margin: 10px 5px 10px 10px;
-  }
-
-  h1 {
-    width: 50px;
-    height: 50px;
-    float: left;
-    font-size: 30px;
-    margin: 10px 10px 10px 5px;
-    font-family: 'Luckiest Guy', cursive;
-  }
+.navbar {
+  width: 100%;
+  height: $navbar-height;
+  position: absolute;
 
   nav {
+    margin-right: 30px;
+
     * {
       float: right;
-    }
-
-    a {
-      text-transform: uppercase;
-    }
-
-    &:last-child {
-      margin-right: 30px;
     }
   }
 }
 
-div.auth {
-  background-color: #00509D;
-  color: #FFFFFA;
+.auth {
+  background-color: transparent;
+  color: $ivory;
 
   a {
     height: 50px;
     margin: 10px;
     padding: 15px 0;
     color: white;
-  }
 
-  a:hover {
-    color: #80a8ce;
+    &:hover {
+      color: #ffc300;
+    }
   }
 }
 
-div.dashboard {
+.dashboard {
   background-color: #FFFFFA;
-  color: #00509D;
+  color: $nobel;
 
-  div.search {
-    position: relative;
+  span {
+    font-family: 'FontAwesome', $default-font;
     float: left;
-    margin: 20px 0 20px 20vw;
+    font-size: 24px;
+    margin: 23px 10px 23px 20px;
+    cursor: pointer;
+    color: $nobel;
 
-    svg {
-      position: absolute;
-      left: 0;
-      font-size: 30px;
-      padding: 5px;
-      margin: 0 0 0 5px;
-      color: #aac5de;
-    }
-
-    input {
-      width: 40vw;
-      height: 30px;
-      padding-left: 40px;
-      border-radius: 5px;
-      border: solid 1px #d5e2ef;
-      outline: none;
-      background-color: rgba(213, 226, 239, 0.2);
-      color: #00509D;
-    }
-
-    &:hover, &:focus {
-      input {
-        border-color: #aac5de;
-        background-color: rgba(213, 226, 239, 0.15);
-      }
+    &:hover {
+      color: $golden-poppy;
     }
   }
 
-  nav {
-    svg {
-      font-size: 24px;
-      margin: 23px 10px;
-      cursor: pointer;
-    }
+  nav svg {
+    font-size: 24px;
+    margin: 23px 10px;
+    cursor: pointer;
+  }
 
-    div.dropdown {
-      width: 160px;
-      position: absolute;
-      top: 60px;
-      right: 0;
-      background-color: #FFFFFA;
+  .dropdown {
+    width: 160px;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    z-index: 3;
+    background-color: #FFFFFA;
 
-      div {
-        width: 100%;
+    div {
+      width: 100%;
 
-        * {
-          height: 40px;
-          float: left;
-          margin: 0;
-        }
+      * {
+        height: 40px;
+        float: left;
+        margin: 0;
+      }
 
-        svg {
-          width: 30px;
-          font-size: 30px;
-          padding: 5px;
-          margin-left: 5px;
-          color: #aac5de;
-        }
+      svg {
+        width: 30px;
+        font-size: 30px;
+        padding: 5px;
+        margin-left: 5px;
+        color: $nobel;
+      }
 
-        a {
-          width: calc(100% - 30px - 5px);
-          padding: 10px;
-          text-align: center;
-          text-transform: lowercase;
-        }
+      a {
+        width: calc(100% - 30px - 5px);
+        padding: 10px;
+        text-align: center;
+        text-transform: lowercase;
+        color: $midnight-express;
+      }
 
-        &:hover {
-          background-color: rgba(213, 226, 239, 0.2);
-        }
+      &:hover {
+        background-color: $golden-poppy01;
       }
     }
   }
 }
+
+//@media screen and (max-width: 656px) {
+//  .dashboard {
+//    .search {
+//      display: none;
+//    }
+//  }
+//}

@@ -1,3 +1,17 @@
+@import "variables";
+
+@font-face {
+  font-family: 'FontAwesome';
+  font-weight: normal;
+  font-style : normal;
+  src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?v=4.3.0');
+  src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),
+  url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'),
+  url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'),
+  url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
+  url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,9 +19,17 @@
 }
 
 .app {
+  display: flex;
+
   font-family: 'Raleway', sans-serif;
+  background-color: $ivory;
 
   a {
     text-decoration: none;
+  }
+
+  button {
+    font-size: 1em;
+    cursor: pointer;
   }
 }

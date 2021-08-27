@@ -1,0 +1,32 @@
+@import '../variables';
+
+.search {
+  position: relative;
+  float: left;
+  margin: 20px 0 20px 20vw;
+
+  svg {
+    position: absolute;
+    left: 0;
+    font-size: 30px;
+    padding: 5px;
+    margin: 0 0 0 5px;
+    color: #99A1A6;
+  }
+
+  input {
+    width: 40vw;
+    height: 30px;
+    padding-left: 40px;
+    border-radius: $border-radius;
+    border: solid 1px #D8D8D8;
+    outline: none;
+    background-color: rgba(216, 216, 216, 0.2);
+  }
+
+  &:hover, &:focus {
+    input {
+      border-color: #c4c4c4;
+    }
+  }
+}

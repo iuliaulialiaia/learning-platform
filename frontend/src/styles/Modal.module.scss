@@ -1,0 +1,38 @@
+@import "variables";
+
+.modal {
+  width: 50vw;
+  min-height: 90vh;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  font-family: $font-family, $default-font;
+  background-color: $ivory;
+
+  input {
+    width: 300px;
+    height: 30px;
+    padding: 20px;
+    border: none;
+    outline: none;
+    border-radius: $border-radius;
+    font-size: 1em;
+    font-family: $font-family, $default-font;
+    background-color: #aac5de;
+    color: #3d3b30;
+  }
+
+  input:focus {
+    background-color: #D5E2EF;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    outline: none;
+    overflow: scroll;
+  }
+}

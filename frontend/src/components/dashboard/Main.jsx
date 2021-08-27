@@ -1,4 +1,4 @@
-import styles from '../../styles/main/Main.module.scss';
+import styles from '../../styles/dashboard/main/Main.module.scss';
 
 function Main(props) {
   return (
